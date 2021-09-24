@@ -1,5 +1,5 @@
 from sqlalchemy.sql.expression import insert
-from controller import insert_lecture
+from controller import get_reservable_seats, insert_lecture, get_reserved_seats
 import os
 import math
 import numpy
@@ -23,6 +23,8 @@ import logging
 import json
 from db import Lecture
 from bs4 import BeautifulSoup
+
+
 WELCOME_STR = """
 Questo bot permette di prenotare un posto a lezione per il corso di informatica del terzo anno di UniGe.\n
 /disponibili mostra le lezioni che possono essere prenotate.
@@ -32,7 +34,7 @@ Questo bot permette di prenotare un posto a lezione per il corso di informatica 
 
 
 EA_LOGIN_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=login&include=login&from=prenotalezione&from_include=prenotalezione_home&_lang=it"
-BOOKING_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=prenotalezione&include=prenotalezione&_lang=it"
+BOOKING_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=prenotalezione&include=prenotalezione"
 API_URL = "https://easyacademy.unige.it/portalestudenti/call_ajax.php"
 PROFILE_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=prenotalezione&include=prenotalezione_profilo&_lang=it"
 
@@ -127,10 +129,12 @@ def pippo():
     try:
         ea_login(driver)
         ug_login(driver, os.getenv("ID"), os.getenv("PASSWORD"))
-        bookings = get_bookings(
+        reservable_seats = get_bookings(
             BOOKING_URL, "var lezioni_prenotabili = JSON.parse('")
-        for lecture in bookings:
-            insert_lecture(lecture)
+        [insert_lecture(lecture) for lecture in reservable_seats]
+        reserved_seats = get_bookings(
+            f"{BOOKING_URL}_gestisci", "var lezioni_prenotate = JSON.parse('")
+        [insert_lecture(lecture) for lecture in reserved_seats]
     except Exception as e:
         logging.exception(e)
     driver.quit()
@@ -194,11 +198,21 @@ async def start(message: types.Message):
 
 
 @ dispatcher.message_handler(commands="disponibili")
-async def available(message: types.Message):
-    if len(bookings) < 1:
+async def reservable_seats(message: types.Message):
+    reservable_seats = get_reservable_seats()
+    if len(reservable_seats) < 1:
         await message.reply("Non ci sono lezioni prenotabili.")
     else:
-        await message.reply("\n\n".join(await get_labels(bookings)))
+        await message.reply("\n\n".join(await get_labels(reservable_seats)))
+
+
+@ dispatcher.message_handler(commands="prenotate")
+async def reserved_seats(message: types.Message):
+    reserved_seats = get_reserved_seats()
+    if len(reserved_seats) < 1:
+        await message.reply("Non ci sono lezioni prenotate.")
+    else:
+        await message.reply("\n\n".join(await get_labels(reserved_seats)))
 
 
 @ dispatcher.message_handler(commands="prenota")
@@ -252,5 +266,5 @@ async def process_username(message: types.Message, state: FSMContext):
 
 if __name__ == "__main__":
     pippo()
-    threading.Thread(target=update_available_bookings).start()
+    # threading.Thread(target=update_available_bookings).start()
     executor.start_polling(dispatcher)
