@@ -1,13 +1,13 @@
 from models import Lecture
 from dotenv import load_dotenv
-import os
+from os import getenv
 from sqlalchemy import create_engine, engine
 from sqlalchemy.orm import sessionmaker
 from utils import delete_booking
 import asyncio
 
 load_dotenv()
-engine = create_engine(os.getenv("DATABASE_URL"), hide_parameters=True)
+engine = create_engine(getenv("DATABASE_URL"), hide_parameters=True)
 
 
 async def sprenota():
