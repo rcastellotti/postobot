@@ -1,1 +1,0 @@
-https://easyacademy.unige.it/portalestudenti/call_ajax.php?mode=cancella_prenotazioni&codice_fiscale=4801634&id_entries=\[1351388\]&id_btn_element=1351388%27

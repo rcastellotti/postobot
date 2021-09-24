@@ -1,9 +1,8 @@
-from sqlalchemy.sql import func
+
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import Column, Integer, String, DateTime, Computed
 from datetime import datetime
-from sqlalchemy.util.langhelpers import hybridproperty
+
 Base = declarative_base()
 
 
@@ -14,7 +13,7 @@ def data(context):
 
 
 class Lecture(Base):
-    __tablename__ = 'Lectures'
+    __tablename__ = 'lectures'
     entry_id = Column(Integer, primary_key=True)
     sede = Column(String)
     aula = Column(String)

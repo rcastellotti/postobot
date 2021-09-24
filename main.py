@@ -21,7 +21,7 @@ from sqlalchemy.exc import IntegrityError
 from aiogram.utils import executor
 import logging
 import json
-from db import Lecture
+from models import Lecture
 from bs4 import BeautifulSoup
 from datetime import datetime
 import asyncio
@@ -161,9 +161,10 @@ def get_qr_bytes(lecture):
         "ora_prima_lezione": lecture.ora_inizio,
         "prenotazioni[]": f"true|{lecture.nome}|{lecture.ora_inizio_lezione} - {lecture.ora_fine_lezione}|{lecture.aula}|0"
     }
-    response = requests.post("https://easyacademy.unige.it/portalestudenti/export_pdf2.php", data=data)
+    response = requests.post(
+        "https://easyacademy.unige.it/portalestudenti/export_pdf2.php", data=data)
     return BytesIO(response.content)
-    
+
 
 def aux_update(entry_id, chat_id):
     asyncio.run(update_and_send_qr(entry_id, chat_id))
@@ -187,11 +188,11 @@ def db_cleanup():
 
 class NewRequest(StatesGroup):
     label = State()
-    
+
 
 class DeleteRequest(StatesGroup):
     label = State()
-    
+
 
 class QrRequest(StatesGroup):
     label = State()
@@ -261,15 +262,15 @@ async def reservable_seats(message: types.Message):
         await NewRequest.label.set()
         markup = await gen_markup(reservable_seats, 1)
         await message.reply("Scegli la lezione da prenotare.", reply_markup=markup)
-        
+
 
 @dispatcher.message_handler(state="*", commands="annulla")
 async def cancel_handler(message: types.Message, state: FSMContext):
-  current_state = await state.get_state()
-  if current_state is None:
-    return
-  await state.finish()
-  await message.reply("Annullato.", reply_markup=types.ReplyKeyboardRemove())
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.reply("Annullato.", reply_markup=types.ReplyKeyboardRemove())
 
 
 @ dispatcher.message_handler(lambda message: parse_booking(message.text) is None, state=NewRequest.label)
@@ -288,7 +289,8 @@ async def process_new_label(message: types.Message, state: FSMContext):
         await bot.send_message(message.chat.id, f"La matricola non esiste oppure non hai ancora impostato un profilo, fallo [qui]({PROFILE_URL})", parse_mode=ParseMode.MARKDOWN)
     else:
         await bot.send_message(message.chat.id, "Prenotazione effettuata, riceverai il QR code a breve.", reply_markup=types.ReplyKeyboardRemove())
-        threading.Thread(target=aux_update, args=(entry_id, message.chat.id)).start()
+        threading.Thread(target=aux_update, args=(
+            entry_id, message.chat.id)).start()
     await state.finish()
 
 
@@ -312,7 +314,8 @@ async def process_invalid_delete_label(message: types.Message):
 async def process_delete_label(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         entry_id = parse_booking(message.text)
-    threading.Thread(target=aux_update, args=(entry_id, message.chat.id)).start()
+    threading.Thread(target=aux_update, args=(
+        entry_id, message.chat.id)).start()
     await bot.send_message(message.chat.id, "Riceverai il QR a breve.", reply_markup=types.ReplyKeyboardRemove())
     await state.finish()
 
@@ -344,113 +347,6 @@ async def process_delete_label(message: types.Message, state: FSMContext):
         await bot.send_message(message.chat.id, "Cancellazione effettuata.", reply_markup=types.ReplyKeyboardRemove())
         threading.Thread(target=pippo).start()
     await state.finish()
-
-
-
-# @ dispatcher.message_handler(commands="prenota")
-# async def booking_request(message: types.Message):
-#     await BookingRequest.label.set()
-#     markup = await gen_markup(bookings, 1)
-#     await message.reply("Scegli la lezione.", reply_markup=markup)
-
-
-# @ dispatcher.message_handler(state="*", commands="annulla")
-# async def cancel_handler(message: types.Message, state: FSMContext):
-#     current_state = await state.get_state()
-#     if current_state is None:
-#         return
-# @ dispatcher.message_handler(commands="prenotate")
-# async def reserved_seats(message: types.Message):
-#     reserved_seats = get_reserved_seats()
-#     if len(reserved_seats) < 1:
-#         await message.reply("Non ci sono lezioni prenotate.")
-#     else:
-#         await message.reply("\n\n".join(await get_labels(reserved_seats)))
-
-
-# @ dispatcher.message_handler(commands="prenota")
-# async def booking_request(message: types.Message):
-#     await BookingRequest.label.set()
-#     markup = await gen_markup(bookings, 1)
-#     await message.reply("Scegli la lezione.", reply_markup=markup)
-
-
-# @ dispatcher.message_handler(state="*", commands="annulla")
-# async def cancel_handler(message: types.Message, state: FSMContext):
-#     current_state = await state.get_state()
-#     if current_state is None:
-#         return
-#     await state.finish()
-#     await message.reply("Annullato.", reply_markup=types.ReplyKeyboardRemove())
-
-
-# @ dispatcher.message_handler(lambda message: parse_booking(message.text) is None, state=BookingRequest.label)
-# async def process_invalid_label(message: types.Message):
-#     await message.reply("Scelta errata!\nRiprova.")
-
-
-# @ dispatcher.message_handler(state=BookingRequest.label)
-# async def process_label(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data["label"] = message.text
-#     await BookingRequest.next()
-#     await message.reply("Inserisci la tua matricola (7 cifre).", reply_markup=types.ReplyKeyboardRemove())
-
-
-# @ dispatcher.message_handler(lambda message: len(message.text) != 7 or not message.text.isdigit(), state=BookingRequest.username)
-# async def process_invalid_username(message: types.Message):
-#     await message.reply("Matricola errata!\nRiprova.")
-
-
-# @ dispatcher.message_handler(state=BookingRequest.username)
-# async def process_username(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         booking_id = parse_booking(data["label"])
-#         username = message.text
-#     result = await book(booking_id, username)
-#     if result == -1:
-#         await bot.send_message(message.chat.id, "Ti sei già prenotato per questa lezione.")
-#     elif result == -2:
-#         await bot.send_message(message.chat.id, f"La matricola non esiste oppure non hai ancora impostato un profilo, fallo [qui]({PROFILE_URL})", parse_mode=ParseMode.MARKDOWN)
-#     else:
-#         await bot.send_message(message.chat.id, "Prenotazione effettuata, riceverai una mail con il QR code.")
-#     await state.finish()
-#     await state.finish()
-#     await message.reply("Annullato.", reply_markup=types.ReplyKeyboardRemove())
-
-
-# @ dispatcher.message_handler(lambda message: parse_booking(message.text) is None, state=BookingRequest.label)
-# async def process_invalid_label(message: types.Message):
-#     await message.reply("Scelta errata!\nRiprova.")
-
-
-# @ dispatcher.message_handler(state=BookingRequest.label)
-# async def process_label(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data["label"] = message.text
-#     await BookingRequest.next()
-#     await message.reply("Inserisci la tua matricola (7 cifre).", reply_markup=types.ReplyKeyboardRemove())
-
-
-# @ dispatcher.message_handler(lambda message: len(message.text) != 7 or not message.text.isdigit(), state=BookingRequest.username)
-# async def process_invalid_username(message: types.Message):
-#     await message.reply("Matricola errata!\nRiprova.")
-
-
-# @ dispatcher.message_handler(state=BookingRequest.username)
-# async def process_username(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         booking_id = parse_booking(data["label"])
-#         username = message.text
-#     result = await book(booking_id, username)
-#     if result == -1:
-#         await bot.send_message(message.chat.id, "Ti sei già prenotato per questa lezione.")
-#     elif result == -2:
-#         await bot.send_message(message.chat.id, f"La matricola non esiste oppure non hai ancora impostato un profilo, fallo [qui]({PROFILE_URL})", parse_mode=ParseMode.MARKDOWN)
-#     else:
-#         await bot.send_message(message.chat.id, "Prenotazione effettuata, riceverai una mail con il QR code.")
-#     await state.finish()
-
 
 if __name__ == "__main__":
     # pippo()

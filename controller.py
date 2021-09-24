@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, event, engine, asc
 import os
 from dotenv import load_dotenv
 from sqlalchemy import exc
-from db import Lecture
+from models import Lecture
 import logging
 from datetime import datetime, timedelta
 load_dotenv()
