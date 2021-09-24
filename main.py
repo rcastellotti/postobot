@@ -172,6 +172,7 @@ async def gen_markup(data, step):
     labels = await get_labels(data)
     pool = numpy.array_split(labels, math.ceil(len(labels) / step))
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    markup.add("/annulla")
     for elems in pool:
         markup.add(*elems)
     return markup
@@ -203,7 +204,8 @@ async def reservable_seats(message: types.Message):
     if len(reservable_seats) < 1:
         await message.reply("Non ci sono lezioni prenotabili.")
     else:
-        await message.reply("\n\n".join(await get_labels(reservable_seats)))
+        markup = await gen_markup(reservable_seats, 1)
+        await message.reply("Scegli la lezione.", reply_markup=markup)
 
 
 @ dispatcher.message_handler(commands="prenotate")

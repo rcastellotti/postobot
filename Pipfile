@@ -10,9 +10,10 @@ requests = "*"
 numpy = "*"
 aiogram = "*"
 python-dotenv = "*"
-psycopg2 = "*"
 sqlalchemy = "*"
 beautifulsoup4 = "*"
+psycopg2-binary = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
