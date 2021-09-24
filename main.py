@@ -16,13 +16,16 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import ParseMode
+from aiogram.types import ParseMode, InputFile
 from sqlalchemy.exc import IntegrityError
 from aiogram.utils import executor
 import logging
 import json
 from db import Lecture
 from bs4 import BeautifulSoup
+from datetime import datetime
+import asyncio
+from io import BytesIO
 
 
 WELCOME_STR = """
@@ -108,7 +111,7 @@ def ug_login(driver, username, password):
 def get_bookings(url, var_identifier):
     bookings = []
     options = webdriver.firefox.options.Options()
-    options.headless = False
+    options.headless = True
     driver = webdriver.Firefox(options=options)
     try:
         phpsessid = ea_login(driver)
@@ -146,12 +149,40 @@ def update_available_bookings(thread=False):
         sleep(60 * 60)
 
 
-def update_and_send_qr(entry_id, chat_id):
+def get_qr_bytes(lecture):
+    data = {
+        "language": "en",
+        "matricola": os.getenv("ID"),
+        "color": "333333",
+        "qr": lecture.qr,
+        "sede": lecture.sede,
+        "ora_inizio": lecture.ora_inizio,
+        "ora_fine": lecture.ora_fine,
+        "data_lezione": f"{datetime.strptime(lecture.data_lezione, '%d/%m/%Y').strftime('%A %d %B %Y')}",
+        "ora_prima_lezione": lecture.ora_inizio,
+        "prenotazioni[]": f"true|{lecture.nome}|{lecture.ora_inizio_lezione} - {lecture.ora_fine_lezione}|{lecture.aula}|0"
+    }
+    response = requests.post("https://easyacademy.unige.it/portalestudenti/export_pdf2.php", data=data)
+    return BytesIO(response.content)
+    
+
+def aux_update(entry_id, chat_id):
+    asyncio.run(update_and_send_qr(entry_id, chat_id))
+
+
+async def update_and_send_qr(entry_id, chat_id):
     pippo()
     lecture = get_lecture(entry_id)
-    bot.send_document(chat_id) # 
+    qr_bytes = get_qr_bytes(lecture)
+    bot2 = Bot(os.getenv("BOT_TOKEN"))
+    qr_file = InputFile(qr_bytes, f"qr_{lecture.entry_id}.pdf")
+    await bot2.send_document(chat_id, qr_file)
 
-class Request(StatesGroup):
+class NewRequest(StatesGroup):
+    label = State()
+    
+
+class DeleteRequest(StatesGroup):
     label = State()
 
 
@@ -220,9 +251,9 @@ async def reservable_seats(message: types.Message):
     if len(reservable_seats) < 1:
         await message.reply("Non ci sono lezioni prenotabili.")
     else:
-        await Request.label.set()
+        await NewRequest.label.set()
         markup = await gen_markup(reservable_seats, 1)
-        await message.reply("Scegli la lezione.", reply_markup=markup)
+        await message.reply("Scegli la lezione da prenotare.", reply_markup=markup)
         
 
 @dispatcher.message_handler(state="*", commands="annulla")
@@ -234,12 +265,12 @@ async def cancel_handler(message: types.Message, state: FSMContext):
   await message.reply("Annullato.", reply_markup=types.ReplyKeyboardRemove())
 
 
-@ dispatcher.message_handler(lambda message: parse_booking(message.text) is None, state=Request.label)
+@ dispatcher.message_handler(lambda message: parse_booking(message.text) is None, state=NewRequest.label)
 async def process_invalid_label(message: types.Message):
     await message.reply("Scelta errata!\nRiprova.")
 
 
-@ dispatcher.message_handler(state=Request.label)
+@ dispatcher.message_handler(state=NewRequest.label)
 async def process_label(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         entry_id = parse_booking(message.text)
@@ -249,19 +280,36 @@ async def process_label(message: types.Message, state: FSMContext):
     elif result == -2:
         await bot.send_message(message.chat.id, f"La matricola non esiste oppure non hai ancora impostato un profilo, fallo [qui]({PROFILE_URL})", parse_mode=ParseMode.MARKDOWN)
     else:
-        await bot.send_message(message.chat.id, "Prenotazione effettuata, riceverai una mail con il QR code.")
-        threading.Thread(target=update_and_send_qr).start()
+        await bot.send_message(message.chat.id, "Prenotazione effettuata, riceverai il QR code a breve.", reply_markup=types.ReplyKeyboardRemove())
+        threading.Thread(target=aux_update, args=(entry_id, message.chat.id)).start()
     await state.finish()
 
 
+@ dispatcher.message_handler(commands="prenotate")
+async def reserved_seats(message: types.Message):
+    reserved_seats = get_reserved_seats()
+    if len(reserved_seats) < 1:
+        await message.reply("Non ci sono lezioni prenotate.")
+    else:
+        await DeleteRequest.label.set()
+        markup = await gen_markup(reserved_seats, 1)
+        await message.reply("Scegli la lezione da cancellare.", reply_markup=markup)
 
-# @ dispatcher.message_handler(commands="prenotate")
-# async def reserved_seats(message: types.Message):
-#     reserved_seats = get_reserved_seats()
-#     if len(reserved_seats) < 1:
-#         await message.reply("Non ci sono lezioni prenotate.")
-#     else:
-#         await message.reply("\n\n".join(await get_labels(reserved_seats)))
+
+@ dispatcher.message_handler(state=DeleteRequest.label)
+async def process_label(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        entry_id = parse_booking(message.text)
+    result = await book(entry_id, os.getenv("ID"))
+    if result == -1:
+        await bot.send_message(message.chat.id, "Ti sei già prenotato per questa lezione.")
+    elif result == -2:
+        await bot.send_message(message.chat.id, f"La matricola non esiste oppure non hai ancora impostato un profilo, fallo [qui]({PROFILE_URL})", parse_mode=ParseMode.MARKDOWN)
+    else:
+        await bot.send_message(message.chat.id, "Prenotazione effettuata, riceverai una mail con il QR code.", reply_markup=types.ReplyKeyboardRemove())
+        threading.Thread(target=aux_update, args=(entry_id, message.chat.id)).start()
+    await state.finish()
+
 
 
 # @ dispatcher.message_handler(commands="prenota")
