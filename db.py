@@ -31,4 +31,4 @@ class Lecture(Base):
         return f"{self.__class__}: {self.__dict__}"
 
     def __str__(self):
-        return f"{self.data_lezione} {self.ora_inizio_lezione}-{self.ora_fine_lezione}\n{self.nome}\n{self.sede} {self.aula}"
+        return f"{self.entry_id}\n{self.data_lezione} {self.ora_inizio_lezione}-{self.ora_fine_lezione}\n{self.nome}\n{self.sede} {self.aula}"

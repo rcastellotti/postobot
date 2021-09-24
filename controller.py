@@ -37,3 +37,18 @@ def get_reserved_seats():
     reservable_seats = session.query(Lecture).filter(
         Lecture.qr != "").order_by(asc(Lecture.lecture_timestamp)).all()
     return reservable_seats
+
+
+def exists(entry_id):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    lecture = session.query(Lecture).filter_by(entry_id=entry_id).all()
+    return len(lecture) > 0
+
+
+def get_lecture(entry_id):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    lecture = session.query(Lecture).filter_by(entry_id=entry_id).all()
+    return lecture[0]
+    
