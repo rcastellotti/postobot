@@ -1,16 +1,15 @@
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, event, engine, asc
+from sqlalchemy import create_engine, engine, asc
 import os
 from dotenv import load_dotenv
 from sqlalchemy import exc
 from models import Lecture
 import logging
 from datetime import datetime, timedelta
+
+
 load_dotenv()
 engine = create_engine(os.getenv("DATABASE_URL"), hide_parameters=True)
-logger = logging.getLogger('sqlalchemy')
-logger.propagate = False
-
 
 def insert_lecture(lectures):
     Session = sessionmaker(bind=engine)

@@ -9,3 +9,12 @@ services:
       POSTGRES_USER: rc
       POSTGRES_DB: postobot
       POSTGRES_PASSWORD: ilovebears
+
+  bot:
+    image: postobot_dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python3 bot.py
+    env_file:
+      - .env
