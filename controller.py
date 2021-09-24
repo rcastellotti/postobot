@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from sqlalchemy import exc
 from db import Lecture
 import logging
+from datetime import datetime, timedelta
 load_dotenv()
 engine = create_engine(os.getenv("DATABASE_URL"), hide_parameters=True)
 logger = logging.getLogger('sqlalchemy')
@@ -39,10 +40,12 @@ def get_reserved_seats():
     return reservable_seats
 
 
-def exists(entry_id):
+def exists(entry_id, qr):
     Session = sessionmaker(bind=engine)
     session = Session()
     lecture = session.query(Lecture).filter_by(entry_id=entry_id).all()
+    if qr:
+        return len(lecture) > 0 and qr != ""
     return len(lecture) > 0
 
 
@@ -51,4 +54,11 @@ def get_lecture(entry_id):
     session = Session()
     lecture = session.query(Lecture).filter_by(entry_id=entry_id).all()
     return lecture[0]
-    
+
+
+def cleanup():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    limit = datetime.now() - timedelta(hours=8)
+    session.query(Lecture).filter(Lecture.lecture_timestamp < limit).delete()
+    session.commit()
