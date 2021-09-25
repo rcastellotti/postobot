@@ -6,15 +6,15 @@
   "env": {
     "MATRICOLA": {
       "description": "La tua matricola",
-      "generator": ""
+      "value": ""
     },
     "PASSWORD": {
       "description": "La tua password",
-      "generator": ""
+      "value": ""
     },
     "BOT_TOKEN": {
       "description": "Il BOT_TOKEN ottenuto precedentemente",
-      "generator": ""
+      "value": ""
     },
     "CHAT_ID": {
       "description": "Il CHAT_ID ottenuto precedentemente",
