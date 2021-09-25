@@ -22,6 +22,6 @@
     }
   },
   "scripts": {
-    "postdeploy": "alembic upgrade head"
+    "postdeploy": "alembic upgrade head && python3 main.py"
   }
 }
