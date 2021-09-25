@@ -30,6 +30,9 @@
     },
     {
       "url": "https://github.com/buitron/firefox-buildpack"
+    },
+    {
+      "url": "heroku/python"
     }
   ]
 }
