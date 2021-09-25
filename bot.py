@@ -15,7 +15,6 @@ from api import book, delete_booking, get_qr_bytes
 from controller import get_lecture, get_reserved_seats, get_reservable_seats
 
 load_dotenv()
-
 PROFILE_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=prenotalezione&include=prenotalezione_profilo"
 
 WELCOME_STR = """
@@ -114,7 +113,7 @@ async def process_invalid_new_label(message: types.Message):
 async def process_new_label(message: types.Message, state: FSMContext):
     try:
         entry_id = parse_lecture(message.text)
-        result = await book(entry_id, getenv("ID"))
+        result = await book(entry_id, getenv("MATRICOLA"))
         if result == -1:
             await bot.send_message(message.chat.id, "Ti sei già prenotato per questa lezione.")
         elif result == -2:
@@ -188,7 +187,7 @@ async def process_invalid_delete_label(message: types.Message):
 async def process_delete_label(message: types.Message, state: FSMContext):
     try:
         entry_id = parse_lecture(message.text)
-        result = await delete_booking(entry_id, getenv("ID"))
+        result = await delete_booking(entry_id, getenv("MATRICOLA"))
         if result == -1:
             await bot.send_message(message.chat.id, "Hai già cancellato questa prenotazione.")
         else:

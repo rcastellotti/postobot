@@ -41,7 +41,7 @@ def update_lectures():
   driver = webdriver.Firefox(options=options)
   try:
     phpsessid = ea_login(driver)
-    ug_login(driver, getenv("ID"), getenv("PASSWORD"))
+    ug_login(driver, getenv("MATRICOLA"), getenv("PASSWORD"))
     sleep(2)
     reservable_seats = parse_json(get_json(phpsessid, BOOKING_URL, "var lezioni_prenotabili = JSON.parse('"))
     reserved_seats = parse_json(get_json(phpsessid, f"{BOOKING_URL}_gestisci", "var lezioni_prenotate = JSON.parse('"))

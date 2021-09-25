@@ -1,6 +1,5 @@
 import math
 import json
-import numpy
 import logging
 import requests
 from time import sleep
@@ -74,9 +73,14 @@ async def get_labels(lectures):
     return [str(lecture) for lecture in lectures]
 
 
+def split(a, n):
+    k, m = divmod(len(a), n)
+    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+
+
 async def gen_markup(data, step):
     labels = await get_labels(data)
-    pool = numpy.array_split(labels, math.ceil(len(labels) / step))
+    pool = split(labels, math.ceil(len(labels) / step))
     markup = ReplyKeyboardMarkup()
     markup.add("/annulla")
     for elems in pool:
