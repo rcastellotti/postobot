@@ -24,8 +24,5 @@
       "description": "PostgreSQL database url",
       "generator": "secret"
     }
-  },
-  "scripts": {
-    "postdeploy": "alembic upgrade head"
   }
 }
