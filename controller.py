@@ -12,11 +12,11 @@ load_dotenv()
 engine = create_engine(getenv("DATABASE_URL"), hide_parameters=True)
 
 
-def insert_lecture(lectures):
+def insert_lecture(lecture):
   try:
     Session = sessionmaker(bind=engine)
     session = Session()
-    session.merge(lectures)
+    session.merge(lecture)
     session.commit()
     session.close()
   except Exception as e:
@@ -38,9 +38,9 @@ def get_reserved_seats():
   try:
     Session = sessionmaker(bind=engine)
     session = Session()
-    reservable_seats = session.query(Lecture).filter(Lecture.qr != "").order_by(asc(Lecture.lecture_timestamp)).all()
+    reserved_seats = session.query(Lecture).filter(Lecture.qr != "").order_by(asc(Lecture.lecture_timestamp)).all()
     session.close()
-    return reservable_seats
+    return reserved_seats
   except Exception as e:
       logging.exception(e)
 

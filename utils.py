@@ -1,6 +1,7 @@
 import math
 import json
 import numpy
+import logging
 import requests
 from time import sleep
 from bs4 import BeautifulSoup
@@ -56,18 +57,21 @@ def parse_json(json):
   return bookings
 
 
-def parse_booking(label, qr=False):
-  data = label.split("\n")
-  entry_id = data[0].split(" ")[0]
-  if not entry_id.isnumeric() or len(entry_id) != 7:
+def parse_lecture(label, qr=False):
+  try:
+    data = label.split("\n")
+    entry_id = data[0].split(" ")[0]
+    if not entry_id.isnumeric() or len(entry_id) != 7:
+      return None
+    if exists(entry_id, qr):
+      return entry_id
     return None
-  if exists(entry_id, qr):
-    return entry_id
-  return None
+  except Exception as e:
+    logging.exception(e)
 
 
-async def get_labels(bookings):
-  return [str(booking) for booking in bookings]
+async def get_labels(lectures):
+  return [str(lecture) for lecture in lectures]
 
 
 async def gen_markup(data, step):

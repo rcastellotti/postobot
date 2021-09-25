@@ -35,7 +35,7 @@ def ug_login(driver, username, password):
     logging.exception(e)
 
 
-def update_bookings():
+def update_lectures():
   options = webdriver.firefox.options.Options()
   options.headless = True
   driver = webdriver.Firefox(options=options)
@@ -52,10 +52,10 @@ def update_bookings():
   driver.quit()
 
 
-def update_bookings_loop(thread=False):
+def update_lectures_loop(thread=False):
   while True:
     try:
-      update_bookings()
+      update_lectures()
     except Exception as e:
       logging.exception(e)
     sleep(60 * 30)

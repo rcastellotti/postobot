@@ -5,10 +5,10 @@ from sqlalchemy import Column, Integer, String, DateTime
 Base = declarative_base()
 
 
-def data(context):
-  a = context.get_current_parameters()['data_lezione']
-  b = context.get_current_parameters()['ora_inizio_lezione']
-  return datetime.strptime(f"{a} {b}", "%d/%m/%Y %H:%M")
+def timestamp(context):
+  date = context.get_current_parameters()['data_lezione']
+  time = context.get_current_parameters()['ora_inizio_lezione']
+  return datetime.strptime(f"{date} {time}", "%d/%m/%Y %H:%M")
 
 
 class Lecture(Base):
@@ -23,7 +23,7 @@ class Lecture(Base):
   nome = Column(String)
   ora_inizio_lezione = Column("ora_inizio_lezione", String)
   ora_fine_lezione = Column(String)
-  lecture_timestamp = Column(DateTime(timezone=False), default=data)
+  lecture_timestamp = Column(DateTime(timezone=False), default=timestamp)
 
   def __repr__(self):
     return f"{self.__class__}: {self.__dict__}"

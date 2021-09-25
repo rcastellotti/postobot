@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_URL = "https://easyacademy.unige.it/portalestudenti/call_ajax.php"
+QR_URL = "https://easyacademy.unige.it/portalestudenti/export_pdf2.php"
 
 
 async def book(lesson_id, username):
@@ -56,7 +57,7 @@ async def get_qr_bytes(lecture):
         "ora_prima_lezione": lecture.ora_inizio,
         "prenotazioni[]": f"true|{lecture.nome}|{lecture.ora_inizio_lezione} - {lecture.ora_fine_lezione}|{lecture.aula}|0"
     }
-    response = requests.post("https://easyacademy.unige.it/portalestudenti/export_pdf2.php", data=data)
+    response = requests.post(QR_URL, data=data)
     return BytesIO(response.content)
   except Exception as e:
     logging.exception(e)
