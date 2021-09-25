@@ -4,13 +4,20 @@
   "website": "https://github.com/rcastellotti/postobot",
   "addons": ["heroku-postgresql:hobby-dev"],
   "env": {
-    "RAILS_ENV": "production",
-    "COOKIE_SECRET": {
-      "description": "This gets generated",
+    "MATRICOLA": {
+      "description": "La tua matricola",
+      "generator": ""
+    },
+    "PASSWORD": {
+      "description": "La tua password",
+      "generator": ""
+    },
+    "BOT_TOKEN": {
+      "description": "Il BOT_TOKEN ottenuto precedentemente",
       "generator": "secret"
     },
-    "SETUP_BY": {
-      "description": "Who initiated this setup",
+    "CHAT_ID": {
+      "description": "Il CHAT_ID ottenuto precedentemente",
       "value": ""
     }
   },
