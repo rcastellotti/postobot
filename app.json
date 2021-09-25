@@ -19,10 +19,9 @@
     "CHAT_ID": {
       "description": "Il CHAT_ID ottenuto precedentemente",
       "value": ""
-    },
-    "DATABASE_URL": {
-      "description": "PostgreSQL database url",
-      "generator": "secret"
     }
+  },
+  "scripts": {
+    "postdeploy": "alembic upgrade head"
   }
 }
