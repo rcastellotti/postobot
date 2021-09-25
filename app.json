@@ -19,6 +19,12 @@
     "CHAT_ID": {
       "description": "Il CHAT_ID ottenuto precedentemente",
       "value": ""
+    },
+    "PATH": {
+      "value": "/usr/local/bin:/usr/bin:/bin:/app/vendor/"
+    },
+    "LD_LIBRARY_PATH": {
+      "value": "/usr/local/lib:/usr/lib:/lib:/app/vendor"
     }
   },
   "scripts": {
