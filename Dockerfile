@@ -1,7 +1,7 @@
 FROM python:alpine
 
 WORKDIR /bot
-ADD *.py  requirements.txt /bot/
+COPY . /bot/
 RUN  apk --no-cache add  firefox py3-numpy postgresql-dev gcc g++ python3-dev musl-dev
 
 RUN sh -c "wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0/geckodriver-v0.30.0-linux64.tar.gz \ 
@@ -9,6 +9,5 @@ RUN sh -c "wget https://github.com/mozilla/geckodriver/releases/download/v0.30.0
             && chmod +x /usr/bin/geckodriver \
             && rm geckodriver-v0.30.0-linux64.tar.gz"
 RUN pip3 install -r requirements.txt
-CMD ["python3", "main.py"]
 
 
