@@ -1,0 +1,20 @@
+{
+  "name": "postobot",
+  "description": "Un bot per prenotare le lezioni di Unige",
+  "website": "https://github.com/rcastellotti/postobot",
+  "addons": ["heroku-postgresql:hobby-dev"],
+  "env": {
+    "RAILS_ENV": "production",
+    "COOKIE_SECRET": {
+      "description": "This gets generated",
+      "generator": "secret"
+    },
+    "SETUP_BY": {
+      "description": "Who initiated this setup",
+      "value": ""
+    }
+  },
+  "scripts": {
+    "postdeploy": "bundle exec rake db:migrate"
+  }
+}

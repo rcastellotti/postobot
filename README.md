@@ -1,61 +1,48 @@
 # postobot
-1. bot father -> token
-2. avvia il bot e scrivigli `/my_id`
-3. andate a questo url `https://api.telegram.org/bot<ILTUOBOTROKEN>/getUpdates`
-4. avrete una risposta come questa, prendete result[chat][id]:
+
+## Configurazione
++ Crea un bot su Telegram con [BotFather](https://t.me/botfather)
++ Configura la variabile d'ambiente `BOT_TOKEN` il token che ti ha dato BotFather
++ Configura i comandi del bot con `/mybots -> scegli il tuo bot -> edit bot -> edit commands`:
+  ```
+  start - Avvia il bot e stampa il messaggio principale
+  prenota - Prenota una lezione tra quelle disponibili
+  prenotate - Ottieni il QR di una lezione tra quelle prenotate
+  cancella - Cancella una lezione tra quelle prenotate
+  annulla - Annulla la procedura corrente
+  ```
++ \[Opzionale\]: per maggiore sicurezza puoi settare il bot in modo che i comandi siano usabili solo da te, per farlo e' sufficiente settare la variabile di ambiente `CHAT_ID`, puoi ottenerlo contattando [IDBot](http://t.me/myidbot).
+
+## Deployment
+
+### Deploy tradizionale (raccomandato)
+
+Esempio di  `docker-compose.yml`
+```yml
+version: "3.1"
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postobot
+      POSTGRES_PASSWORD: <POSTGRES_PASSWORD>
+
+  bot:
+    image: registry.gitlab.com/
+    environment:
+      CHAT_ID: <CHAT_ID>
+      BOT_TOKEN: <BOT_TOKEN>
+      MATRICOLA: <MATRICOLA>
+      PASSWORD: <PASSWORD>
+      DATABASE_URL: postgresql+psycopg2://postgres:<POSTGRES_PASSWORD>@db/postobot
 ```
-{
-  "ok": true,
-  "result": [
-    {
-      "update_id": 987654321,
-      "message": {
-        "message_id": 366,
-        "from": {
-          "id": 123456789,
-          "is_bot": false,
-          "first_name": "F",
-          "username": "Fabifont",
-          "language_code": "en"
-        },
-        "chat": {
-          "id": 123456789,
-          "first_name": "F",
-          "username": "Fabifont",
-          "type": "private"
-        },
-        "date": 1632561784,
-        "text": "/my_id",
-        "entities": [
-          {
-            "offset": 0,
-            "length": 6,
-            "type": "bot_command"
-          }
-        ]
-      }
-    }
-  ]
-}
-```
 
-poi ci sono due strade
+### Deploy su Heroku
 
-5. settate le variabili d'ambiente nel .env
-6. docker
+Se hai un account Heroku
 
-oppure
-
-5. deploy su heroku
-6. settate le variabili d'ambiente su heroku
-
-oppure deploy docker su heroku (meh)
-
-botfather -> /mybots -> scegli il tuo bot -> edit bot -> edit commands e invia:
-```
-start - Avvia il bot e stampa il messaggio principale
-prenota - Prenota una lezione tra quelle disponibili
-prenotate - Ottieni il QR di una lezione tra quelle prenotate
-cancella - Cancella una lezione tra quelle prenotate
-annulla - Annulla la procedura corrente
-```
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
