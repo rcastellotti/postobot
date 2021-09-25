@@ -23,5 +23,13 @@
   },
   "scripts": {
     "postdeploy": "alembic upgrade head && python3 main.py"
-  }
+  },
+  "buildpacks": [
+    {
+      "url": "http://github.com/buitron/geckodriver-buildpack"
+    },
+    {
+      "url": "https://github.com/buitron/firefox-buildpack"
+    }
+  ]
 }
