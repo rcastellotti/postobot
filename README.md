@@ -77,5 +77,5 @@ Non dovrebbe essere complesso adattare questo bot a qualsiasi ateneo che usi [Ea
 
 ## Autori
 
-- [Roberto Castellotti](https://rcastellotti.dev)
 - [Fabio Fontana](https://fabifont.github.io)
+- [Roberto Castellotti](https://rcastellotti.dev)
