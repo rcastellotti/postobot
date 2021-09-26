@@ -3,7 +3,7 @@
   "description": "Un bot per prenotare le lezioni di Unige",
   "website": "https://github.com/rcastellotti/postobot",
   "addons": ["heroku-postgresql:hobby-dev"],
-  "stack": "heroku-18",
+  "stack": "heroku-20",
   "env": {
     "MATRICOLA": {
       "description": "La tua matricola",
