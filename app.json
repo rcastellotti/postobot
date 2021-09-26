@@ -22,10 +22,16 @@
       "value": ""
     },
     "PATH": {
-      "value": "/usr/local/bin:/usr/bin:/bin:/app/vendor/:/app/vendor/firefox"
+      "value": "/usr/local/bin:/usr/bin:/bin:/app/vendor/"
     },
     "LD_LIBRARY_PATH": {
-      "value": "/usr/local/lib:/usr/lib:/lib:/app/vendor:/app/vendor/firefox"
+      "value": "/usr/local/lib:/usr/lib:/lib:/app/vendor"
+    },
+    "FIREFOX_BIN": {
+      "value": "/app/vendor/firefox/firefox"
+    },
+    "GECKODRIVER_PATH": {
+      "value": "/app/vendor/geckodriver/geckodriver"
     }
   },
   "scripts": {
@@ -33,10 +39,7 @@
   },
   "buildpacks": [
     {
-      "url": "http://github.com/buitron/geckodriver-buildpack"
-    },
-    {
-      "url": "http://github.com/evosystem-jp/heroku-buildpack-firefox"
+      "url": "https://github.com/pyronlaboratory/heroku-integrated-firefox-geckodriver"
     },
     {
       "url": "heroku/python"
