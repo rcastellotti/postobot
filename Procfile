@@ -1,1 +1,1 @@
-web: python3 main.py
+urgentworker: python3 main.py
