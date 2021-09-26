@@ -35,13 +35,10 @@
       "url": "http://github.com/buitron/geckodriver-buildpack"
     },
     {
-      "url": "https://github.com/buitron/firefox-buildpack"
+      "url": "http://github.com/evosystem-jp/heroku-buildpack-firefox"
     },
     {
       "url": "heroku/python"
     }
   ]
 }
-
-
-
