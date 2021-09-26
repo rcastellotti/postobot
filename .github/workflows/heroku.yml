@@ -5,4 +5,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
+          git branch -d heroku
           git subtree push --prefix postobot origin heroku
