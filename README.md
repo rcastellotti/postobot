@@ -1,7 +1,8 @@
 # postobot
-<span>
+<span style="text-align:center">
 
-[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)  ![](https://github.com/rcastellotti/postobot/actions/workflows/main.yml/badge.svg)
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)  ![](https://github.com/rcastellotti/postobot/actions/workflows/main.yml/badge.svg) ![](https://img.shields.io/docker/pulls/rcastellotti/postobot.svg)
+
 </span>
 
 ## Configurazione
