@@ -2,7 +2,6 @@ import asyncio
 import logging
 import threading
 from os import getenv
-from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from aiogram.dispatcher import FSMContext
@@ -14,7 +13,6 @@ from utils import gen_markup, parse_lecture
 from api import book, delete_booking, get_qr_bytes
 from controller import get_lecture, get_reserved_seats, get_reservable_seats
 
-load_dotenv()
 PROFILE_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=prenotalezione&include=prenotalezione_profilo"
 
 WELCOME_STR = """
@@ -59,12 +57,13 @@ def aux_uasr(entry_id, chat_id):
     asyncio.run(update_and_send_qr(entry_id, chat_id))
 
 
-@dispatcher.message_handler(lambda message: message.from_user.id != int(getenv("CHAT_ID")), content_types=["any"])
-async def handle_unwanted_users(message: types.Message):
-    try:
-        await bot.delete_message(message.chat.id, message.message_id)
-    except Exception as e:
-        logging.exception(e)
+if getenv("CHAT_ID") is not None:
+    @dispatcher.message_handler(lambda message: message.from_user.id != int(getenv("CHAT_ID")), content_types=["any"])
+    async def handle_unwanted_users(message: types.Message):
+        try:
+            await message.reply("Non sei autorizzato ad eseguire comandi.")
+        except Exception as e:
+            logging.exception(e)
 
 
 @dispatcher.message_handler(commands="start")

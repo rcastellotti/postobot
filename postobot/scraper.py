@@ -3,13 +3,11 @@ import os
 from os import getenv
 import logging
 from time import sleep
-from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from controller import insert_lecture
 from utils import wait_until_present, js_click, get_json, parse_json
 
-load_dotenv()
 
 EA_LOGIN_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=login&include=login&from=prenotalezione&from_include=prenotalezione_home&_lang=it"
 BOOKING_URL = "https://easyacademy.unige.it/portalestudenti/index.php?view=prenotalezione&include=prenotalezione"

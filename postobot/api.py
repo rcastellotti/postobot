@@ -3,9 +3,7 @@ import requests
 from os import getenv
 from io import BytesIO
 from datetime import datetime
-from dotenv import load_dotenv
 
-load_dotenv()
 
 API_URL = "https://easyacademy.unige.it/portalestudenti/call_ajax.php"
 QR_URL = "https://easyacademy.unige.it/portalestudenti/export_pdf2.php"

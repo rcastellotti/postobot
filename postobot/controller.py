@@ -1,13 +1,10 @@
 import logging
 from os import getenv
-from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, asc
 from datetime import datetime, timedelta
 
 from models import Lecture
-
-load_dotenv()
 
 DATABASE_URL = getenv("DATABASE_URL")
 # fixing heroku fuckery (postgres:// is deprecated)
