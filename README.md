@@ -1,4 +1,7 @@
 # postobot
+<span>
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)  ![](https://github.com/rcastellotti/postobot/actions/workflows/main.yml/badge.svg)
+</span>
 
 ## Configurazione
 + Crea un bot su Telegram con [BotFather](https://t.me/botfather)
@@ -74,5 +77,3 @@ Non dovrebbe essere complesso adattare questo bot a qualsiasi ateneo che usi [Ea
 
 - [Roberto Castellotti](https://rcastellotti.dev)
 - [Fabio Fontana](https://fabifont.github.io)
-
-  
