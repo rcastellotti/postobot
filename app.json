@@ -21,10 +21,10 @@
       "value": ""
     },
     "PATH": {
-      "value": "/usr/local/bin:/usr/bin:/bin:/app/vendor/"
+      "value": "/usr/local/bin:/usr/bin:/bin:/app/vendor/:/app/vendor/firefox"
     },
     "LD_LIBRARY_PATH": {
-      "value": "/usr/local/lib:/usr/lib:/lib:/app/vendor"
+      "value": "/usr/local/lib:/usr/lib:/lib:/app/vendor:/app/vendor/firefox"
     }
   },
   "scripts": {
@@ -42,3 +42,6 @@
     }
   ]
 }
+
+
+
