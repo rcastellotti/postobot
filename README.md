@@ -46,3 +46,5 @@ services:
 Se hai un account Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/rcastellotti/postobot/tree/heroku)
