@@ -35,7 +35,7 @@
     }
   },
   "scripts": {
-    "postdeploy": "alembic upgrade head && python3 main.py"
+    "postdeploy": "alembic upgrade head"
   },
   "buildpacks": [
     {

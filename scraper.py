@@ -39,7 +39,6 @@ def ug_login(driver, username, password):
 
 def update_lectures():
     binary = FirefoxBinary(os.environ.get('FIREFOX_BIN'))
-
     options = webdriver.firefox.options.Options()
     options.headless = True
     driver = webdriver.Firefox(
