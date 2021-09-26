@@ -5,4 +5,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          git subtree push --prefix postobot origin heroku --force
+          git push origin `git subtree split --prefix postobot main`:heroku --force
